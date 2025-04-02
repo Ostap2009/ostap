@@ -15,20 +15,19 @@
 
     </header>
     
-    <section class="gallery" id="gallery">
+   <section class="gallery" id="gallery">
         <script>
             const paintings = [];
             for (let i = 1; i <= 18; i++) {
-                paintings.push({ src: `painting${i}.jpg` });
+                paintings.push({ src: painting${i}.jpg, title: Картина ${i} });
             }
-            document.write(paintings.map((painting, index) => `
+            document.write(paintings.map((painting, index) => 
                 <div class="gallery-item" onclick="openModal(${index})">
                     <img src="${painting.src}" alt="Картина ${index + 1}">
                 </div>
-            `).join(''));
+            ).join(''));
         </script>
     </section>
-    
     <div id="modal" class="modal">
         <div class="modal-content-wrapper">
             <span class="close" onclick="closeModal()">&times;</span>
