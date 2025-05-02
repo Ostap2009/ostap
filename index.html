@@ -1,120 +1,301 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ostap Romanchenko</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Raleway:wght@300;400&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ostap Romanchenko</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Helvetica Neue', sans-serif; background-color: #0f0f0f; color: #fff; }
+    header { text-align: center; padding: 2rem 1rem; }
+    header h1 { font-size: 2.5rem; }
+    header p { font-size: 1rem; color: #aaa; margin-top: 0.5rem; }
+    nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin-top: 1rem; font-size: 1rem; }
+    nav a { color: #fff; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
+    nav a:hover { color: #ffcc00; }
+
+    .lang-toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #222;
+      border: none;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      border-radius: 5px;
+    }
+
+    .hero-carousel {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .hero-carousel img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+    .hero-carousel img.active {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    .gallery-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.95);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1000;
+      padding: 1rem;
+    }
+    .gallery-modal img {
+      max-width: 100vw;
+      max-height: 80vh;
+    }
+    .caption {
+      color: #ccc;
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 2rem;
+      color: #fff;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    .nav-arrows {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 1rem;
+    }
+    .arrow-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .about {
+      padding: 3rem 1rem;
+      max-width: 800px;
+      margin: auto;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    .about h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      background-color: #111;
+    }
+    footer a {
+      margin: 0 0.5rem;
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.5rem;
+    }
+    footer a img {
+      width: 24px;
+      height: 24px;
+      vertical-align: middle;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 2rem; }
+      header p { font-size: 0.9rem; }
+      nav { gap: 1rem; font-size: 0.9rem; }
+      .about { padding: 2rem 1rem; font-size: 0.95rem; }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <img src="logo.jpg" alt="Логотип" class="logo">
+  <button class="lang-toggle" onclick="toggleLanguage()">EN</button>
 
-    </header>
-    
-   <section class="gallery" id="gallery">
-        <script>
-            const paintings = [];
-            for (let i = 1; i <= 18; i++) {
-                paintings.push({ src: painting${i}.jpg, title: Картина ${i} });
-            }
-            document.write(paintings.map((painting, index) => 
-                <div class="gallery-item" onclick="openModal(${index})">
-                    <img src="${painting.src}" alt="Картина ${index + 1}">
-                </div>
-            ).join(''));
-        </script>
-    </section>
-    <div id="modal" class="modal">
-        <div class="modal-content-wrapper">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <img id="modal-img" class="modal-content">
-            <p id="modal-caption"></p>
-            <button class="prev" onclick="changeImage(-1)">&#10094;</button>
-            <button class="next" onclick="changeImage(1)">&#10095;</button>
-        </div>
+  <header>
+    <h1>Ostap Romanchenko</h1>
+    <p class="lang-de">Künstler</p>
+    <p class="lang-en" style="display:none">Artist</p>
+    <nav>
+      <a onclick="openGallery()" class="lang-de">Galerie</a>
+      <a href="#about" class="lang-de">Über mich</a>
+      <a href="#contact" class="lang-de">Kontakt</a>
+
+      <a onclick="openGallery()" class="lang-en" style="display:none">Gallery</a>
+      <a href="#about" class="lang-en" style="display:none">About</a>
+      <a href="#contact" class="lang-en" style="display:none">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero-carousel" onclick="openGallery()">
+    <img src="hero1.jpg" alt="Bild 1" class="active">
+    <img src="hero2.jpg" alt="Bild 2">
+    <img src="hero3.jpg" alt="Bild 3">
+  </section>
+
+  <div class="gallery-modal" id="galleryModal">
+    <button class="close-btn" onclick="closeGallery()">&times;</button>
+    <div class="nav-arrows">
+      <button class="arrow-btn" onclick="changeModalImage(-1); event.stopPropagation();">&#10094;</button>
+      <button class="arrow-btn" onclick="changeModalImage(1); event.stopPropagation();">&#10095;</button>
     </div>
-    
-    <script>
-        let currentIndex = 0;
-        function openModal(index) {
-            currentIndex = index;
-            document.getElementById("modal").style.display = "flex";
-            updateModal();
-        }
-        
-        function closeModal() {
-            document.getElementById("modal").style.display = "none";
-        }
-        
-        function changeImage(direction) {
-            currentIndex = (currentIndex + direction + paintings.length) % paintings.length;
-            updateModal();
-        }
-        
-        function updateModal() {
-            const modalImg = document.getElementById("modal-img");
-            modalImg.src = paintings[currentIndex].src;
-            modalImg.alt = paintings[currentIndex].title;
-            document.getElementById("modal-caption").innerText = paintings[currentIndex].title;
-        }
-    </script>
+    <img id="modalImage" src="" alt="">
+    <div class="caption" id="modalCaption"></div>
+  </div>
+  
 
-    <section class="about">
-        <h2>Über mich</h2>
-        <p>Ich bin ein Künstler aus der Ukraine, der sich leidenschaftlich mit der Erschaffung von Kunst beschäftigt. Mein Werk ist von einer tiefen Faszination für Geschichte, Architektur und Natur inspiriert. Durch meine Arbeiten versuche ich, Emotionen und Erlebnisse auf eine visuelle Weise zu vermitteln, die den Betrachter zum Nachdenken anregt. Besonders interessieren mich europäische Städte und ihre historischen Gebäude, die ich in meinen Gemälden und Grafiken verewige.</p>
 
-<p>In meiner Kunst arbeite ich mit verschiedenen Stilen und Techniken, wobei ich Ölmalerei und grafische Materialien bevorzuge. Ich experimentiere oft mit Ausdruckskraft und minimalistischem Design, wobei ich die Form und Struktur betone, um eine besondere Atmosphäre zu erzeugen. Durch den Einsatz von kräftigen Farben und interessanten Texturen versuche ich, eine Verbindung zwischen der klassischen Kunsttradition und modernen Akzenten zu schaffen.</p>
+  <section id="about" class="about">
+    <h2 class="lang-de">Über mich</h2>
+    <h2 class="lang-en" style="display:none">About</h2>
+    <p class="lang-de">
+      Ich bin Künstler.
 
-<p>Ich lade Sie herzlich ein, einen Blick auf meine Arbeiten zu werfen. Besuchen Sie meine sozialen Netzwerke, um mehr über meine neuesten Projekte und kreativen Prozesse zu erfahren. Es wäre mir eine Freude, wenn meine Kunst auch Sie inspirieren würde.</p>
-    </section>
-    <section class="about">
-   
-    <img src="your-photo.jpg" alt="Фото мене" class="profile-photo">
-</section>
-    
-    <section class="contacts">
-        <h2>Kontakte</h2>
-        
-       <a href="https://www.instagram.com/ostap.romanchenkoo/" target="_blank" rel="noopener noreferrer">
-    <img src="instagram-icon.png" alt="Instagram" width="40" height="40">
-</a>
+Ich begann schon als Kind zu zeichnen – spontan, ohne über Technik oder Stil nachzudenken. Heute arbeite ich im Bereich der zeitgenössischen Kunst und verstehe meine Arbeit als eine Auseinandersetzung mit der Welt, in der wir leben. Mich interessieren gesellschaftliche Prozesse, ihre Widersprüche, ihre Entwicklung, ihre Verletzlichkeit.
 
-<a href="https://www.tiktok.com/@ostapromanchenko" target="_blank" rel="noopener noreferrer">
-    <img src="tiktok-icon.png" alt="TikTok" width="40" height="40">
-</a>
+Inspiration finde ich in der Beobachtung des Alltags, in Gesprächen, in sozialen Spannungen, in Veränderungen, die leise beginnen und dann ganze Systeme erschüttern. Ich glaube, dass Kunst nicht nur darstellen, sondern auch fragen und herausfordern soll.
 
-<a href="mailto:romanchenkoostap2018@gmail.com">
-    <img src="email-icon.png" alt="Email" width="40" height="40">
-</a>
-    </section>
-    
-    <script>
-        let currentIndex = 0;
-        function openModal(index) {
-            currentIndex = index;
-            document.getElementById("modal").style.display = "flex";
-            updateModal();
-        }
-        
-        function closeModal() {
-            document.getElementById("modal").style.display = "none";
-        }
-        
-        function changeImage(direction) {
-            currentIndex = (currentIndex + direction + paintings.length) % paintings.length;
-            updateModal();
-        }
-        
-        function updateModal() {
-            document.getElementById("modal-img").src = paintings[currentIndex].src;
-            document.getElementById("modal-caption").innerText = paintings[currentIndex].title;
-        }
-    </script>
+Ich arbeite mit verschiedenen Medien – Malerei, Installation, digitale Formate. Jedes Projekt verlangt seine eigene Sprache. Wichtig ist mir dabei die Authentizität und die Bereitschaft, Risiken einzugehen.
+
+Künstler zu sein bedeutet für mich, aufmerksam zu bleiben, sensibel, aber auch kritisch. Die Oberfläche reicht nicht – ich will tiefer schauen. Kunst ist mein Werkzeug, um zu verstehen, was uns als Gesellschaft bewegt, was uns formt, was uns fehlt.
+    </p>
+    <p class="lang-en" style="display:none">
+     I am an artist.
+
+I began drawing as a child—spontaneously, without thinking about technique or style. Today, I work in the field of contemporary art and see my practice as a dialogue with the world we live in. I am deeply interested in social dynamics: their contradictions, their evolution, their fragility.
+
+I find inspiration in observing everyday life, in conversations, in social tensions, and in subtle changes that eventually shake entire systems. I believe that art should not only represent but also question and challenge.
+
+I work across various media—painting, installation, and digital formats. Each project demands its own language. What matters most to me is authenticity and the willingness to take risks.
+
+For me, being an artist means staying attentive, sensitive, and critical. The surface is never enough—I want to look deeper. Art is my tool to explore what moves us as a society, what shapes us, and what we lack.
+
+
+
+
+    </p>
+  </section>
+
+  <footer id="contact">
+    <p class="lang-de">Kontakt:</p>
+    <p class="lang-en" style="display:none">Contact:</p>
+    <a href="https://www.instagram.com/ostap.romanchenkoo?igsh=YjRnNG4zcmFxaTY4&utm_source=qr" target="_blank">
+      <img src="icon-instagram.png" alt="Instagram">
+    </a>
+    <a href="https://www.tiktok.com/@ostapromanchenko" target="_blank">
+      <img src="icon-tiktok.png" alt="TikTok">
+    </a>
+    <a href="mailto:romanchenkoostap2018@gmail.com">
+      <img src="icon-mail.png" alt="Email">
+    </a>
+  </footer>
+
+  <script>
+    const heroImages = document.querySelectorAll('.hero-carousel img');
+    let heroIndex = 0;
+    setInterval(() => {
+      heroImages[heroIndex].classList.remove('active');
+      heroIndex = (heroIndex + 1) % heroImages.length;
+      heroImages[heroIndex].classList.add('active');
+    }, 4000);
+
+    const galleryImages = Array.from({length: 20}, (_, i) => ({
+      src: `gallery${i+1}.jpg`,
+      caption: `Bildtitel ${i+1}`
+    }));
+
+    const modal = document.getElementById('galleryModal');
+    const modalImg = document.getElementById('modalImage');
+    const modalCaption = document.getElementById('modalCaption');
+    let modalIndex = 0;
+
+    function openGallery() {
+      modal.style.display = 'flex';
+      showModalImage(modalIndex);
+    }
+
+    function closeGallery() {
+      modal.style.display = 'none';
+    }
+
+    function showModalImage(index) {
+      modalIndex = index;
+      modalImg.src = galleryImages[index].src;
+      modalCaption.textContent = galleryImages[index].caption;
+    }
+
+    function changeModalImage(direction) {
+      modalIndex = (modalIndex + direction + galleryImages.length) % galleryImages.length;
+      showModalImage(modalIndex);
+    }
+
+    modal.addEventListener('click', () => {
+      changeModalImage(1);
+    });
+
+    let touchStartX = null;
+    modal.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+    modal.addEventListener('touchend', e => {
+      if (touchStartX === null) return;
+      const touchEndX = e.changedTouches[0].screenX;
+      if (touchEndX - touchStartX > 50) {
+        changeModalImage(-1);
+      } else if (touchStartX - touchEndX > 50) {
+        changeModalImage(1);
+      }
+      touchStartX = null;
+    });
+
+    function toggleLanguage() {
+      const langDe = document.querySelectorAll('.lang-de');
+      const langEn = document.querySelectorAll('.lang-en');
+      const toggleBtn = document.querySelector('.lang-toggle');
+      const isGerman = toggleBtn.textContent === 'EN';
+
+      langDe.forEach(el => el.style.display = isGerman ? 'none' : '');
+      langEn.forEach(el => el.style.display = isGerman ? '' : 'none');
+
+      toggleBtn.textContent = isGerman ? 'DE' : 'EN';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const userLang = navigator.language || navigator.userLanguage;
+      if (userLang.startsWith('en')) {
+        toggleLanguage();
+      }
+    });
+  </script>
 </body>
 </html>
-</body>
-</html>
+
+
